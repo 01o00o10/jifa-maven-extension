@@ -35,4 +35,4 @@ jobs:
           node-version: 18
       - name: build
         run: |
-          bash gradlew build --info --stacktrace
+          mvn -B clean verify

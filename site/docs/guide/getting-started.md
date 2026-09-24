@@ -52,17 +52,18 @@ Platform support: linux/amd64, linux/arm64. For other platforms, please build fr
 ### Run
 
 ```shell
-# run as standalone worker 
-$ ./gradlew runStandaloneWorker
+# build once, then run as a standalone worker
+$ mvn -B clean package
+$ java -jar server/target/jifa.jar --jifa.role=standalone-worker --jifa.open-browser-when-ready=true
 
 # run as master
-$ ./gradlew runMaster
+$ java -jar server/target/jifa.jar --jifa.role=master
 
 # run as static worker
-$ ./gradlew runStaticWorker
+$ java -jar server/target/jifa.jar --jifa.role=static-worker --jifa.port=9102
 ```
 
-You can also run these tasks in IDE.
+You can also run `Launcher` in the IDE.
 
 For the introduction of roles, please refer to [deployment](./deployment.md).
 
@@ -83,13 +84,13 @@ $ npm run dev
 ### Build
 
 ```shell
-$ ./gradlew build
+$ mvn -B clean install
 
 # skip test
-$ ./gradlew build -x test
+$ mvn -B clean package -DskipTests
 ```
 
-The output can be found in `./server/build/distributions`.
+The executable JAR and ZIP are in `./server/target`.
 
 ### Docker Image
 

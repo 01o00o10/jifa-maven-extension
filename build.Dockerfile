@@ -4,6 +4,6 @@ RUN apt-get update \
     && apt-get clean
 WORKDIR /workspace/
 COPY . /workspace/
-ARG GRADLE_ARGS
-RUN --mount=type=cache,target=/root/.gradle eval set -- "$GRADLE_ARGS" &&  ./gradlew $@
-RUN mkdir -p server/build/dependency && (cd server/build/dependency; jar -xf ../libs/jifa.jar)
+ARG MAVEN_ARGS="clean package -DskipTests"
+RUN --mount=type=cache,target=/root/.m2 mvn -B $MAVEN_ARGS
+RUN mkdir -p server/target/dependency && (cd server/target/dependency; jar -xf ../jifa.jar)

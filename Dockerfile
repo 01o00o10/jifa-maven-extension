@@ -2,12 +2,12 @@ FROM node:18 AS build
 RUN apt-get update && apt-get install openjdk-17-jdk -y
 WORKDIR /workspace/
 COPY . /workspace/
-RUN --mount=type=cache,target=/root/.gradle ./gradlew clean build -x test
-RUN mkdir -p server/build/dependency && (cd server/build/dependency; jar -xf ../libs/jifa.jar)
+RUN --mount=type=cache,target=/root/.m2 mvn -B clean package -DskipTests
+RUN mkdir -p server/target/dependency && (cd server/target/dependency; jar -xf ../jifa.jar)
 
 FROM eclipse-temurin:17-jdk
 VOLUME /tmp
-ARG DEPENDENCY=/workspace/server/build/dependency
+ARG DEPENDENCY=/workspace/server/target/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /jifa/lib
 COPY --from=build ${DEPENDENCY}/META-INF /jifa/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /jifa

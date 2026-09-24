@@ -51,17 +51,18 @@ $ curl -fsSL https://raw.githubusercontent.com/eclipse/jifa/main/jifa.sh | bash 
 ### 运行
 
 ```shell
-# 以 standalone worker 角色运行 
-$ ./gradlew runStandaloneWorker
+# 先构建一次，再以 standalone worker 角色运行
+$ mvn -B clean package
+$ java -jar server/target/jifa.jar --jifa.role=standalone-worker --jifa.open-browser-when-ready=true
 
 # 以 master 角色运行
-$ ./gradlew runMaster
+$ java -jar server/target/jifa.jar --jifa.role=master
 
 # 以 static worker 角色运行
-$ ./gradlew runStaticWorker
+$ java -jar server/target/jifa.jar --jifa.role=static-worker --jifa.port=9102
 ```
 
-你也可以在 IDE 中运行这些任务。
+你也可以在 IDE 中直接运行 `Launcher`。
 
 关于运行角色的介绍，请参考[部署](./deployment.md)。
 
@@ -81,13 +82,13 @@ $ npm run dev
 ### 构建
 
 ```shell
-$ ./gradlew build
+$ mvn -B clean install
 
 # 跳过测试
-$ ./gradlew build -x test
+$ mvn -B clean package -DskipTests
 ```
 
-构建结果位于 `./server/build/distributions` 目录。
+可执行 JAR 与 ZIP 位于 `./server/target` 目录。
 
 ### Docker 镜像
 

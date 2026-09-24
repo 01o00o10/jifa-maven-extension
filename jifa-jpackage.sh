@@ -12,12 +12,12 @@
 
 set -e
 
-./gradlew clean build -x test
+mvn -B clean package -DskipTests
 
 # Path of the input directory that contains the files to be packaged (absolute path or relative to the current directory)
 # All files in the input directory will be packaged into the application image.
-inputPath="server/build/libs"
-destinationPath="server/build/distributions"
+inputPath="server/target"
+destinationPath="server/target/distributions"
 
 name="Eclipse Jifa"
 osName=$(uname -s)

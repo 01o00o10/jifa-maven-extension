@@ -1,6 +1,7 @@
 .DS_Store
 .gradle
 **/build/
+**/target/
 !src/**/build/
 
 # Ignore Gradle GUI config
@@ -12,7 +13,15 @@ gradle-app.setting
 .cursor/
 **/node_modules/
 **/tmp/
-
+.github
+.gradle
+.kilo
+.test-temp
+.github/
+.gradle/
+.kilo/
+.test-temp/
+docs/
 *.jar
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar

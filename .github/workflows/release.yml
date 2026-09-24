@@ -70,7 +70,7 @@ jobs:
           platforms: linux/amd64
           load: true
           build-args: |
-            GRADLE_ARGS="clean build -Declipse-mat-deps.os=linux -Declipse-mat-deps.arch=amd64"
+            MAVEN_ARGS="clean package -DskipTests"
           push: false
       - name: Copy build artifacts from image
         run: |
@@ -79,8 +79,8 @@ jobs:
           mkdir jifa-build
           mkdir jifa-artifacts
           docker create --name jifa-build jifa-build:latest
-          docker cp jifa-build:/workspace/server/build/dependency jifa-build/amd64
-          docker cp jifa-build:/workspace/server/build/distributions/jifa.zip jifa-artifacts/jifa-linux-amd64.zip
+          docker cp jifa-build:/workspace/server/target/dependency jifa-build/amd64
+          docker cp jifa-build:/workspace/server/target/jifa.zip jifa-artifacts/jifa-linux-amd64.zip
           docker rm jifa-build
       - name: Build for arm64
         uses: docker/build-push-action@v5
@@ -91,13 +91,13 @@ jobs:
           platforms: linux/amd64
           load: true
           build-args: |
-            GRADLE_ARGS="clean build -x test -Declipse-mat-deps.os=linux -Declipse-mat-deps.arch=aarch64"
+            MAVEN_ARGS="clean package -DskipTests"
           push: false
       - name: Copy build artifacts from image
         run: |
           docker create --name jifa-build jifa-build:latest
-          docker cp jifa-build:/workspace/server/build/dependency jifa-build/arm64
-          docker cp jifa-build:/workspace/server/build/distributions/jifa.zip jifa-artifacts/jifa-linux-arm64.zip
+          docker cp jifa-build:/workspace/server/target/dependency jifa-build/arm64
+          docker cp jifa-build:/workspace/server/target/jifa.zip jifa-artifacts/jifa-linux-arm64.zip
           docker rm jifa-build
       - name: Build and push final image
         uses: docker/build-push-action@v5
