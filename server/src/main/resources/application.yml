@@ -23,7 +23,7 @@ jifa:
   ai:
     enabled: ${JIFA_AI_ENABLED:${JIFA_AI_ENABLE:true}}
     provider: ${JIFA_AI_PROVIDER:deepseek}
-    api-key: ${JIFA_AI_API_KEY:sk-fcfb5055688f4a5bb4e35001ef480cae}
+    api-key: ${JIFA_AI_API_KEY:}
     base-url: ${JIFA_AI_BASE_URL:https://api.deepseek.com}
     model: ${JIFA_AI_MODEL:deepseek-chat}
     temperature: ${JIFA_AI_TEMPERATURE:0.2}
