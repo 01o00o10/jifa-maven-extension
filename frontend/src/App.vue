@@ -19,6 +19,7 @@ import LoginForm from '@/components/forms/LoginForm.vue';
 import axios from 'axios';
 import { useEnv } from '@/stores/env';
 import { ElLoading } from 'element-plus';
+import AiFloatingAssistant from '@/components/ai/AiFloatingAssistant.vue';
 
 const env = useEnv();
 const error = ref(false);
@@ -55,6 +56,7 @@ onMounted(() => {
     <LoginForm v-if="env.loginFormVisible" />
     <div class="ej-container">
       <Header />
+      <AiFloatingAssistant />
 
       <div class="ej-body" v-if="shaken">
         <el-result

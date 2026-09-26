@@ -15,11 +15,12 @@ package org.eclipse.jifa.server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.eclipse.jifa.server.ai.AiProperties;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-@EnableConfigurationProperties({Configuration.class})
+@EnableConfigurationProperties({Configuration.class, AiProperties.class})
 @EnableTransactionManagement
 @EnableScheduling
 public class Launcher {

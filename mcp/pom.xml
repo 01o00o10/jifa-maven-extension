@@ -10,11 +10,42 @@
     </parent>
     <artifactId>jifa-mcp</artifactId>
     <name>Jifa MCP Server</name>
+    <properties>
+        <mat.deps.dir>${maven.multiModuleProjectDirectory}/analysis/heap-dump/provider/src/main/resources/mat-deps</mat.deps.dir>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.eclipse.jifa</groupId>
             <artifactId>analysis</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jifa</groupId>
+            <artifactId>gc-log-analysis</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jifa</groupId>
+            <artifactId>thread-dump-analysis</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jifa</groupId>
+            <artifactId>jfr</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jifa</groupId>
+            <artifactId>heap-dump-analysis-provider</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jifa.mat</groupId>
+            <artifactId>equinox-osgi</artifactId>
+            <version>3.22.0</version>
+            <scope>system</scope>
+            <systemPath>${mat.deps.dir}/org.eclipse.osgi-3.22.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -34,6 +65,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>org.eclipse.jifa.mcp.McpApplication</mainClass>
+                    <includeSystemScope>true</includeSystemScope>
                 </configuration>
             </plugin>
         </plugins>

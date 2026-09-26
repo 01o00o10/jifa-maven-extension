@@ -34,7 +34,8 @@ mvn clean package -DskipTests
 java -jar server/target/jifa.jar
 ```
 
-前端仍使用自身的 npm 构建流程；发布前请先执行 `npm ci && npm run build-only`（在 `frontend` 目录），然后再打包服务端。
+Maven 会使用 `frontend-maven-plugin` 自动安装项目固定版本的 Node/npm、执行
+`npm ci` 和 Vite 构建，并将 Vue 静态资源装入 `server/target/jifa.jar`。
 
 ### AI/MCP 诊断接口
 
@@ -42,7 +43,9 @@ MCP 已拆分为独立模块，可单独构建和部署，不依赖 Jifa server�
 
 ```shell
 mvn -pl mcp -am clean package
-java -jar mcp/target/jifa-mcp.jar
+java -jar mcp/target/jifa-mcp.jar \
+  --server.port=18081 \
+  --jifa.mcp.allowed-root=/absolute/path/to/jifa-storage
 ```
 
 服务启动后，AI 客户端可通过 `POST /mcp` 使用 JSON-RPC 调用 Jifa 的分析能力：
@@ -51,13 +54,17 @@ java -jar mcp/target/jifa-mcp.jar
 {"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}
 ```
 
-调用工具时，工具名为 `namespace.api`，参数中必须提供已上传文件的 `target` 唯一名称：
+调用工具时，工具名为 `namespace.api`，参数中必须提供 MCP 进程可访问且位于
+`jifa.mcp.allowed-root` 下的绝对文件路径：
 
 ```json
-{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"heap-dump.overview","arguments":{"target":"example.hprof"}}}
+{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"heap-dump.overview","arguments":{"target":"/absolute/path/to/jifa-storage/heap-dump/example.hprof"}}}
 ```
 
-`tools/list` 会根据当前注册的分析插件动态返回工具和参数信息，`tools/call` 会复用 Jifa 原有的权限、文件定位、Worker 调度和分析执行链路。
+`tools/list` 会根据当前注册的分析插件动态返回工具和参数信息，`tools/call` 会执行路径白名单检查并复用 Jifa 原有 Analysis API。由主服务调用 MCP 时，主服务负责把文件唯一标识解析为实际分析机器上的路径。
+
+本分支相对原生 Jifa 的完整改造说明见 [README.md](README.md)，迁移和联调问题见
+[Maven、MCP 与 AI 改造问题复盘](docs/maven-mcp-ai-troubleshooting.md)。
 
 ### [在线演示 🛝](https://jifa.dragonwell-jdk.io)
 

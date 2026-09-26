@@ -71,6 +71,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriBuilder;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 import reactor.netty.http.client.HttpClient;
 
 import java.io.IOException;
@@ -359,6 +360,35 @@ public class WorkerServiceImpl extends ConfigurationAccessor implements WorkerSe
             return response.bodyToMono(String.class)
                            .map(s -> GSON.fromJson(s, responseClass));
         }).toFuture();
+    }
+
+    @Override
+    public Flux<String> streamRequest(WorkerEntity worker, HttpRequestToWorker<?> request) {
+        UriBuilder uriBuilder = new DefaultUriBuilderFactory().builder()
+                                                              .scheme("http")
+                                                              .host(worker.getHostAddress())
+                                                              .port(worker.getPort())
+                                                              .path(HTTP_API_PREFIX + "/" + request.uri());
+        WebClient.RequestBodySpec spec = webClient.method(request.method())
+                                                  .uri(uriBuilder.build())
+                                                  .accept(MediaType.TEXT_EVENT_STREAM);
+        String jwtToken = userService.getCurrentUserJwtTokenOrNull();
+        if (jwtToken != null) spec.header(HttpHeaders.AUTHORIZATION, jwtToken);
+        if (request.body() != null) {
+            byte[] bytes = GSON.toJson(request.body()).getBytes(Constant.CHARSET);
+            spec.contentType(MediaType.APPLICATION_JSON)
+                .body((BodyInserter<byte[], ClientHttpRequest>) (message, context) -> {
+                    DataBuffer buffer = message.bufferFactory().wrap(bytes);
+                    message.getHeaders().setContentLength(bytes.length);
+                    return message.writeWith(Mono.just(buffer));
+                });
+        }
+        return spec.exchangeToFlux(response -> {
+            if (!response.statusCode().is2xxSuccessful()) {
+                return response.createException().flatMapMany(Flux::error);
+            }
+            return response.bodyToFlux(String.class);
+        });
     }
 
     private ElasticWorkerEntity acquireElasticWorkerForAnalysis(FileEntity target) {

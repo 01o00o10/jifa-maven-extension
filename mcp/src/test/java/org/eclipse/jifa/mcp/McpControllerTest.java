@@ -6,13 +6,24 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class McpControllerTest {
+
+    private McpController controller() {
+        return new McpController(new McpToolService(System.getProperty("user.dir")));
+    }
+
     @Test
-    void listsDiagnosticTool() {
+    void listsJifaTools() {
         JsonObject request = new JsonObject();
         request.addProperty("method", "tools/list");
-        JsonObject response = new McpController().handleRequest(request);
-        assertEquals("diagnose_file", response.getAsJsonObject("result")
-                .getAsJsonArray("tools").get(0).getAsJsonObject().get("name").getAsString());
+        JsonObject response = controller().handleRequest(request);
+        boolean hasDetectTool = false;
+        for (var tool : response.getAsJsonObject("result").getAsJsonArray("tools")) {
+            if ("file.detect".equals(tool.getAsJsonObject().get("name").getAsString())) {
+                hasDetectTool = true;
+                break;
+            }
+        }
+        assertEquals(true, hasDetectTool);
     }
 
     @Test
@@ -22,7 +33,7 @@ class McpControllerTest {
         JsonObject params = new JsonObject();
         params.add("arguments", new JsonObject());
         request.add("params", params);
-        assertEquals(-32602, new McpController().handleRequest(request).getAsJsonObject("result")
+        assertEquals(-32602, controller().handleRequest(request).getAsJsonObject("result")
                 .getAsJsonObject("error").get("code").getAsInt());
     }
 }

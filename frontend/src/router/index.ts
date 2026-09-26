@@ -16,6 +16,7 @@ import Analysis from '@/components/Analysis.vue';
 import Files from '@/components/Files.vue';
 // @ts-ignore
 import NotFound from '@/components/NotFound.vue';
+import AiSettings from '@/components/ai/AiSettings.vue';
 import { FileType, fileTypeMap } from '@/composables/file-types';
 // @ts-ignore
 import NProgress from 'nprogress';
@@ -38,6 +39,7 @@ declare module 'vue-router' {
 
 const routes: RouteRecordRaw[] = [
   { name: 'Files', path: '/', component: Files },
+  { name: 'AiSettings', path: '/ai-settings', component: AiSettings },
   { name: 'NotFound', path: '/:pathMatch(.*)', component: NotFound }
 ];
 

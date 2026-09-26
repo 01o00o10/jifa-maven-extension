@@ -25,6 +25,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.concurrent.CompletableFuture;
+import reactor.core.publisher.Flux;
 
 public interface WorkerService {
 
@@ -41,4 +42,6 @@ public interface WorkerService {
     <Response> Response syncRequest(WorkerEntity worker, HttpRequestToWorker<Response> request);
 
     <Response> CompletableFuture<Response> asyncRequest(WorkerEntity worker, HttpRequestToWorker<Response> request);
+
+    Flux<String> streamRequest(WorkerEntity worker, HttpRequestToWorker<?> request);
 }

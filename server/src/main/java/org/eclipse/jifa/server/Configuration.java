@@ -21,6 +21,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jifa.common.util.Validate;
+import org.eclipse.jifa.server.ai.AiProperties;
 import org.eclipse.jifa.server.enums.FileTransferMethod;
 import org.eclipse.jifa.server.enums.Role;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -172,6 +173,9 @@ public class Configuration {
      * Use this to allow integration with custom security filters.
      */
     private boolean securityFiltersEnabled = true;
+
+    /** AI provider and diagnosis gateway configuration. */
+    private AiProperties ai = new AiProperties();
 
     @PostConstruct
     private void init() {
